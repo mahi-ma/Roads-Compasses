@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import postRouter from "./routes/post.routes.js";
+import models from "./models/index.js"
 
 const app = express();
 
@@ -9,7 +11,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-const db = require("./app/models");
+const db = models;
 db.sequelize.sync({ force: true })
     .then(() => {
         console.log("Synced db.");
@@ -23,6 +25,8 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/posts",postRouter);
 
 // simple route
 app.get("/", (req, res) => {
