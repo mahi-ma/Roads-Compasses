@@ -1,42 +1,56 @@
-import { DataTypes,Sequelize} from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 
-// const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-//     host: dbConfig.HOST,
-//     dialect: dbConfig.dialect,
-//     operatorsAliases: false,
+export const sequelize = new Sequelize(
+    'rcApp',
+    'root',
+    '123456789',
+    {
+        host: 'localhost',
+        dialect: 'mysql'
+    }
+);
 
-//     pool: {
-//         max: dbConfig.pool.max,
-//         min: dbConfig.pool.min,
-//         acquire: dbConfig.pool.acquire,
-//         idle: dbConfig.pool.idle
-//     }
-// });
+const Post = sequelize.define("post", {
+    id:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+    },
 
-const Posts = (sequelize, Sequelize) => {
-    const Post = sequelize.define("post", {
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        subtitle: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        author: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        release_date: {
-            type: DataTypes.DATEONLY,
-        },
-        body: {
-            type: DataTypes.STRING,
-            allowNull: false
-        }
-    });
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    subtitle: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    body: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    author: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    category_id:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    
+    
+    updated_at: {
+        type: DataTypes.DATEONLY,
+    },
+});
 
-    return Post;
-};
 
-export default Posts;
+
+sequelize.sync().then(() => {
+    console.log("Post table created sucessfully")
+}).catch((error) => {
+    console.error('Unable to create table : ', error);
+})
+
+
+export default Post;
