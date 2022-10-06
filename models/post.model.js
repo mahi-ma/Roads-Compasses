@@ -1,56 +1,57 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
+import PostCategories from "./post_category.model.js";
+import PostTags from "./post_tag.model.js";
 
-export const sequelize = new Sequelize(
-    'rcApp',
-    'root',
-    '123456789',
-    {
-        host: 'localhost',
-        dialect: 'mysql'
-    }
-);
+const Posts = (sequelize, Sequelize) => {
 
-const Post = sequelize.define("post", {
-    id:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true,
-    },
+    const Post = sequelize.define("post", {
+        id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+        },
 
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    subtitle: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    body: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    author: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    category_id:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    
-    
-    updated_at: {
-        type: DataTypes.DATEONLY,
-    },
-});
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        subtitle: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        body: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        author: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        category_id: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        updated_at: {
+            type: DataTypes.DATEONLY,
+        },
+    });
+
+    Post.hasMany(PostTags(sequelize,Sequelize),{
+        foreignKey: "post_id",
+        sourceKey: "id",
+    })
+    Post.hasMany(PostCategories(sequelize,Sequelize),{
+        foreignKey: "post_id",
+        sourceKey: "id",
+    })
+
+    sequelize.sync().then(() => {
+        console.log("Post table created sucessfully")
+    }).catch((error) => {
+        console.error('Unable to create table : ', error);
+    })
+    return Post;
+}
 
 
-
-sequelize.sync().then(() => {
-    console.log("Post table created sucessfully")
-}).catch((error) => {
-    console.error('Unable to create table : ', error);
-})
-
-
-export default Post;
+export default Posts;

@@ -1,11 +1,11 @@
 import dbConfig from "../db.config.js";
 
 import { Sequelize } from "sequelize";
-import Post from "./post.model.js";
-import User from "./user.model.js";
-import PostTag from "./post_tag.model.js";
-import FilterTag from "./tag.model.js";
-import Category from "./category.model.js";
+import Posts from "./post.model.js";
+import Users from "./user.model.js";
+import PostTags from "./post_tag.model.js";
+import FilterTags from "./tag.model.js";
+import Categories from "./category.model.js";
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
@@ -25,11 +25,11 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.post = new Post(sequelize, Sequelize);
-db.user = new User(sequelize, Sequelize);
-db.category = new Category(sequelize, Sequelize);
-db.postTag = new PostTag(sequelize, Sequelize);
-db.filterTag= new FilterTag(sequelize, Sequelize); 
+db.post = Posts(sequelize, Sequelize);
+db.user = Users(sequelize, Sequelize);
+db.category = Categories(sequelize, Sequelize);
+db.postTag = PostTags(sequelize, Sequelize);
+db.filterTag = FilterTags(sequelize, Sequelize);
 
 export default db;
 

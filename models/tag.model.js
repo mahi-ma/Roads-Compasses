@@ -1,35 +1,30 @@
-import {DataTypes, DATE, Sequelize} from "sequelize";
-import mysql from "mysql";
+import { DataTypes } from "sequelize";
+import PostTags from "./post_tag.model.js";
 
-// const mysql = require('mysql')
+const FilterTags = (sequelize, Sequelize) => {
+    const FilterTag = sequelize.define("filterTag", {
+        id: {
+            type: DataTypes.STRING,
+            primaryKey: true,
+        },
+        name: {
+            type: DataTypes.STRING
+        }
 
-export const sequelize = new Sequelize(
-    'rcApp',
-    'root',
-    '123456789',
-    {
-        host: 'localhost',
-        dialect: 'mysql',
-    }
+    });
 
-);
+    FilterTag.hasMany(PostTags(sequelize,Sequelize),{
+        foreignKey: "tag_id",
+        sourceKey: "id",
+    })
 
-const FilterTag = sequelize.define("filterTag",{
-    id:{
-        type: DataTypes.STRING,
-        primaryKey: true,
-    },
-    name:{
-        type: DataTypes.STRING
-    }
-    
-});
+    sequelize.sync().then(() => {
+        console.log("User table is successfully created")
 
-sequelize.sync().then(() =>{
-    console.log("User table is successfully created")
+    }).catch((error) => {
+        console.error("Faliure in creating table: ", error);
+    })
+    return FilterTag;
+}
 
-}).catch((error)=>{
-    console.error("Faliure in creating table: ",error);
-})
-
-export default FilterTag;
+export default FilterTags;

@@ -1,24 +1,24 @@
 import { DataTypes } from "sequelize";
 
-const PostTags = (sequelize, Sequelize) => {
-    const PostTag = sequelize.define("postTag", {
+const PostCategories = (sequelize, Sequelize) => {
+    const PostCategory = sequelize.define("postCategory", {
         post_id: {
             type: DataTypes.STRING,
             primaryKey: true
         },
-        tag_id: {
+        category_id: {
             type: DataTypes.STRING,
             primaryKey: true
         }
     });
 
     sequelize.sync().then(() => {
-        console.log("PostTag table is successfully created");
+        console.log("PostCatgory table is successfully created");
     }).catch((error) => {
         console.error("Failure in creating table: ", error);
     })
 
-    return PostTag;
+    return PostCategory;
 }
 
-export default PostTags;
+export default PostCategories;
