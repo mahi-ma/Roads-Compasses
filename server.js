@@ -30,11 +30,13 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/posts",postRouter);
+// app.use("/posts",postRouter);
 app.use("/user",userRouter);
 app.use("/category",categoryRouter);
 app.use("/filerTag",filterTagRouter);
 app.use("/postTag",postTagRouter);
+
+postRouter(app);
 
 // simple route
 app.get("/", (req, res) => {

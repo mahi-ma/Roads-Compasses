@@ -25,10 +25,12 @@ const Users = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-
     });
 
-    User.hasMany(Posts(sequelize,Sequelize));
+    User.hasMany(Posts(sequelize,Sequelize),{
+        foreignKey: "author_id",
+        sourceKey: "id",
+    });
 
     sequelize.sync().then(() => {
         console.log("User table is successfully created")

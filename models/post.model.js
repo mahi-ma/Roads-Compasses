@@ -10,7 +10,6 @@ const Posts = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -23,11 +22,7 @@ const Posts = (sequelize, Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        author: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        category_id: {
+        author_id: {
             type: DataTypes.STRING,
             allowNull: false
         },
