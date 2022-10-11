@@ -4,70 +4,119 @@ const Posts = db.posts;
 const Op = db.Sequelize.op;
 
 const createPost = async (req, res) => {
-    if (!req.body.title) {
-        res.status(400).send({
-            message: "Post title cannot be empty"
-        });
-        return;
-    }
-    if (!req.body.body) {
-        res.status(400).send({
-            message: "Post body cannot be empty"
-        });
-        return;
-    }
-    const newpost = await db.sequelize.query(
-        `INSERT INTO Post (title,subtitle,body,author,category_id,updated_at) values ('${req.body.title}','${req.body.subtitle}','${req.body.body}','${req.body.author_id}',datetime('now'))`
-        , {
-            replacements: { id: req.user.id },
+    try{
+        const { title, subtitle, body, author_id } = req.body;
+        if (!req.body.title) {
+            res.status(400).send({
+                message: "Post title cannot be empty"
+            });
+            return;
+        }
+        if (!req.body.body) {
+            res.status(400).send({
+                message: "Post body cannot be empty"
+            });
+            return;
+        }
+        const newpost = await db.sequelize.query(
+            `INSERT INTO Posts (title,subtitle,body,author_id,createdAt,updatedAt,updated_at) values ('${title}','${subtitle}','${body}',${author_id},CURDATE(),CURDATE(),CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
-    });
-    if(newpost){
-        res.status(200).json({
-            status:200,
-            message: "Post created successfully",
-            post : newpost
+        });
+        res.send({
+            id: newpost[0],
+            title,
+            subtitle,
+            body,
+            author_id,
+        });
+    }
+    catch(e){
+        res.status(500).send({
+            message: e.message
         })
     }
 }
 
-const updatePostByID = (req, res) => {
+const updatePostByID = async (req, res) => {
+    try{
+        const { title, subtitle, body, author_id } = req.body;
+        const { id } = req.params;
+    
+        const sql = `UPDATE posts
+        SET title = '${title}',
+        subtitle = '${subtitle}',
+        body = '${body}',
+        author_id = ${author_id},
+        updatedAt = CURDATE(),
+        updated_at = CURDATE()
+        WHERE id = ${id};`
+    
+        const result = await db.sequelize.query(sql, {
+            type: db.sequelize.QueryTypes.UPDATE
+        })
+        res.send({
+            id: result[0],
+            title,
+            subtitle,
+            body,
+            author_id,
+        });
+    }
+    catch(e){
+        res.status(500).send({
+            message: e.message
+        })
+    }
 
 }
 
-const deletePostById = (req, res) => {
-
+const deletePostById = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const sql = `DELETE from posts where id=${id}`;
+        const result = await db.sequelize.query(sql,{
+            type: db.sequelize.QueryTypes.DELETE
+        })
+            res.send({
+                message: "Deleted Successfully"
+            });
+        return;
+    }
+    catch(e){
+        res.status(500).send({
+            message: e.message
+        })
+    }
 }
 
 const getAllPosts = async (req, res) => {
-    const posts = await db.sequelize.query(`SELECT * from Post`);
-    if(posts){
-        res.status(200).json({
-            status:200,
-            message: "Posts retrieved successfully",
-            posts : posts
-        })
+    try{
+        const posts = await db.sequelize.query(`SELECT * from Posts`, {
+            type: db.sequelize.QueryTypes.SELECT
+        });
+        res.send(posts);
     }
-    else{
+    catch(e){
         res.status(500).send({
-            message: "Server error"
+            message: e.message
         })
     }
 }
 
 const getPostById = async (req, res) => {
-    const id = req.params.id;
-    const selectedPost = await db.sequelize.query(`SELECT * from Post where id='${id}'`);
-    if(selectedPost){
-        res.status(200).json({
-            status:200,
-            message: "Post retrieved successfully",
-            post : selectedPost
-        })
+    try{
+        const id = req.params.id;
+        const selectedPost = await db.sequelize.query(`SELECT * from Posts where id=${id}`, {
+            type: db.sequelize.QueryTypes.SELECT
+        });
+        res.send({
+            ...selectedPost[0]
+        });
+        return res;
     }
-    else{
+    catch(e){
         res.status(500).send({
-            message: "Server error"
+            message: e.message
         })
     }
 }

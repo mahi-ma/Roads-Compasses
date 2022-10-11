@@ -5,19 +5,19 @@ const postRouter = app => {
     var router = express.Router();
 
     //get all posts
-    router.get("/", postController.getAllPosts);
+    app.get("/posts", postController.getAllPosts);
     
     //create post
-    router.post("/", postController.createPost);
+    app.post("/posts", postController.createPost);
     
     //update post
-    router.put("/:id", postController.updatePostByID);
+    app.put("/posts/:id", postController.updatePostByID);
     
     //delete post
-    router.delete("/:id", postController.deletePostById);
+    app.delete("/posts/:id", postController.deletePostById);
     
     //get post by id
-    router.get("/:id", postController.getPostById);
+    app.get("/posts/:id", postController.getPostById);
 
     app.use("/posts",router);
 }

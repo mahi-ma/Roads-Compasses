@@ -6,9 +6,10 @@ const Posts = (sequelize, Sequelize) => {
 
     const Post = sequelize.define("post", {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             allowNull: false,
-            primaryKey: true,
+            primaryKey: true
         },
         title: {
             type: DataTypes.STRING,
@@ -24,7 +25,7 @@ const Posts = (sequelize, Sequelize) => {
         },
         author_id: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         updated_at: {
             type: DataTypes.DATEONLY,
