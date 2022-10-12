@@ -24,8 +24,21 @@ const Posts = (sequelize, Sequelize) => {
             allowNull: false
         },
         author_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true
+        },
+        category_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        tag_ids: {
+            type: DataTypes.STRING, 
+            get: function() {
+                return JSON.parse(this.getDataValue('tag_ids'));
+            }, 
+            set: function(val) {
+                return this.setDataValue('tag_ids', JSON.stringify(val));
+            }
         },
         updated_at: {
             type: DataTypes.DATEONLY,

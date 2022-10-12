@@ -3,11 +3,11 @@ import { DataTypes } from "sequelize";
 const PostCategories = (sequelize, Sequelize) => {
     const PostCategory = sequelize.define("postCategory", {
         post_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         category_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true
         }
     });

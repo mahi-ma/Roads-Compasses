@@ -21,7 +21,8 @@ const Users = (sequelize, Sequelize) => {
             type: DataTypes.STRING,
         },
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             allowNull: false,
             primaryKey: true,
         },

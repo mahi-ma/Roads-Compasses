@@ -4,13 +4,13 @@ import PostTags from "./post_tag.model.js";
 const FilterTags = (sequelize, Sequelize) => {
     const FilterTag = sequelize.define("filterTag", {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
         name: {
             type: DataTypes.STRING
         }
-
     });
 
     FilterTag.hasMany(PostTags(sequelize,Sequelize),{

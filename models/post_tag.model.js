@@ -3,11 +3,11 @@ import { DataTypes } from "sequelize";
 const PostTags = (sequelize, Sequelize) => {
     const PostTag = sequelize.define("postTag", {
         post_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         tag_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true
         }
     });

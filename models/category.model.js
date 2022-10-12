@@ -1,10 +1,12 @@
 import { DataTypes } from "sequelize";
 import PostCategories from "./post_category.model.js";
+import Posts from "./post.model.js";
 
 const Categories = (sequelize, Sequelize) => {
     const Category = sequelize.define("category", {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             allowNull: false,
             primaryKey: true,
         },
@@ -17,6 +19,11 @@ const Categories = (sequelize, Sequelize) => {
     });
 
     Category.hasMany(PostCategories(sequelize,Sequelize),{
+        foreignKey: "category_id",
+        sourceKey: "id",
+    })
+
+    Category.hasMany(Posts(sequelize,Sequelize),{
         foreignKey: "category_id",
         sourceKey: "id",
     })
