@@ -4,7 +4,7 @@ import { Sequelize } from "sequelize";
 import Posts from "./post.model.js";
 import Users from "./user.model.js";
 import PostTags from "./post_tag.model.js";
-import FilterTags from "./tag.model.js";
+import Tags from "./tag.model.js";
 import Categories from "./category.model.js";
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -29,7 +29,7 @@ db.post = Posts(sequelize, Sequelize);
 db.user = Users(sequelize, Sequelize);
 db.category = Categories(sequelize, Sequelize);
 db.postTag = PostTags(sequelize, Sequelize);
-db.filterTag = FilterTags(sequelize, Sequelize);
+db.tag = Tags(sequelize, Sequelize);
 
 export default db;
 

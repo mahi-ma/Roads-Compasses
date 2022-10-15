@@ -10,6 +10,10 @@ const Users = (sequelize, Sequelize) => {
         },
         name: {
             type: DataTypes.STRING,
+            allowNull: false
+        },
+        profile_picture: {
+            type: DataTypes.STRING
         },
         designation: {
             type: DataTypes.STRING,

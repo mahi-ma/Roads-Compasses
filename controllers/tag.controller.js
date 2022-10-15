@@ -1,25 +1,24 @@
 import db from "../models/index.js";
 
-const Posts = db.category;
+const Tags = db.tag;
 const Op = db.Sequelize.op;
 
-const createCategory = async (req,res) => {
+const createTag = async (req,res) => {
     try{
-        const { name, description } = req.body;
+        const { name } = req.body;
         if (!req.body.name) {
             res.status(400).send({
                 message: "Name field cannot be empty"
             });
             return;
         }
-        const newcategory = await db.sequelize.query(
-            `INSERT INTO Categories (name,description,createdAt,updatedAt) values ('${name}','${description}',CURDATE(),CURDATE())`, {
+        const newtag = await db.sequelize.query(
+            `INSERT INTO Tags (name,createdAt,updatedAt) values ('${name}',CURDATE(),CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
-            id: newcategory[0],
-            name,
-            description
+            id: newtag[0],
+            name
         });
     }
     catch (e){
@@ -29,14 +28,13 @@ const createCategory = async (req,res) => {
     }
 }
 
-const updateCategoryById = async (req, res) => {
+const updateTagById = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name } = req.body;
         const { id } = req.params;
 
-        const sql = `UPDATE categories
+        const sql = `UPDATE tags
         SET name = '${name}',
-        description = '${description}',
         updatedAt = CURDATE()
         WHERE id = ${id};`
 
@@ -45,8 +43,7 @@ const updateCategoryById = async (req, res) => {
         })
         res.send({
             id: result[0],
-            name,
-            description
+            name
         });
     }
     catch (e) {
@@ -57,10 +54,10 @@ const updateCategoryById = async (req, res) => {
 
 }
 
-const deleteCategoryById = async (req, res) => {
+const deleteTagById = async (req, res) => {
     try {
         const { id } = req.params;
-        const sql = `DELETE from categories where id=${id}`;
+        const sql = `DELETE from tags where id=${id}`;
         const result = await db.sequelize.query(sql, {
             type: db.sequelize.QueryTypes.DELETE
         })
@@ -77,9 +74,9 @@ const deleteCategoryById = async (req, res) => {
 }
 
 
-const getAllCategories = async (req,res) => {
+const getAllTags = async (req,res) => {
     try {
-        const tags = await db.sequelize.query(`SELECT * from categories`, {
+        const tags = await db.sequelize.query(`SELECT * from tags`, {
             type: db.sequelize.QueryTypes.SELECT
         });
         res.send(tags);
@@ -91,14 +88,14 @@ const getAllCategories = async (req,res) => {
     }
 }
 
-const getCategoryById = async (req, res) => {
+const getTagById = async (req, res) => {
     try {
         const id = req.params.id;
-        const selectedCategory = await db.sequelize.query(`SELECT * from Categories where id=${id}`, {
+        const selectedTag = await db.sequelize.query(`SELECT * from Tags where id=${id}`, {
             type: db.sequelize.QueryTypes.SELECT
         });
         res.send({
-            ...selectedCategory[0]
+            ...selectedTag[0]
         });
         return res;
     }
@@ -110,9 +107,9 @@ const getCategoryById = async (req, res) => {
 }
 
 export default {
-    createCategory,
-    getAllCategories,
-    updateCategoryById,
-    deleteCategoryById,
-    getCategoryById
+    createTag,
+    getAllTags,
+    updateTagById,
+    deleteTagById,
+    getTagById
 }

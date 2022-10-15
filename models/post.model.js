@@ -11,6 +11,16 @@ const Posts = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true
         },
+        images: {
+            type: DataTypes.JSON,
+            default: [],
+            get() {
+                return JSON.parse(JSON.stringify(this.getDataValue('images')));
+            },
+            set(val) {
+               this.setDataValue('images',JSON.stringify(val));
+            }
+        },
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -29,15 +39,17 @@ const Posts = (sequelize, Sequelize) => {
         },
         category_id: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: true,
+            default: null
         },
         tag_ids: {
-            type: DataTypes.STRING, 
-            get: function() {
-                return JSON.parse(this.getDataValue('tag_ids'));
-            }, 
-            set: function(val) {
-                return this.setDataValue('tag_ids', JSON.stringify(val));
+            type: DataTypes.JSON, 
+            default: [],
+            get() {
+                return JSON.parse(JSON.stringify(this.getDataValue('tag_ids')));
+            },
+            set(val) {
+               this.setDataValue('tag_ids',JSON.stringify(val));
             }
         },
         updated_at: {

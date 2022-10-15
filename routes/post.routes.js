@@ -11,7 +11,7 @@ const postRouter = app => {
     app.post("/posts", postController.createPost);
     
     //update post
-    app.put("/posts/:id", postController.updatePostByID);
+    app.put("/posts/:id", postController.updatePostById);
     
     //delete post
     app.delete("/posts/:id", postController.deletePostById);

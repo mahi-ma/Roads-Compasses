@@ -1,19 +1,20 @@
 import { DataTypes } from "sequelize";
 import PostTags from "./post_tag.model.js";
 
-const FilterTags = (sequelize, Sequelize) => {
-    const FilterTag = sequelize.define("filterTag", {
+const Tags = (sequelize, Sequelize) => {
+    const Tag = sequelize.define("tag", {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
-            primaryKey: true,
+            primaryKey: true
         },
         name: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         }
     });
 
-    FilterTag.hasMany(PostTags(sequelize,Sequelize),{
+    Tag.hasMany(PostTags(sequelize,Sequelize),{
         foreignKey: "tag_id",
         sourceKey: "id",
     })
@@ -24,7 +25,7 @@ const FilterTags = (sequelize, Sequelize) => {
     }).catch((error) => {
         console.error("Faliure in creating table: ", error);
     })
-    return FilterTag;
+    return Tag;
 }
 
-export default FilterTags;
+export default Tags;

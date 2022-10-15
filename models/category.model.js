@@ -12,6 +12,7 @@ const Categories = (sequelize, Sequelize) => {
         },
         name: {
             type: DataTypes.STRING,
+            allowNull: false
         },
         description: {
             type: DataTypes.STRING
