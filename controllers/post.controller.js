@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+import { getStringVal } from "../utilities/index.js";
 
 const Posts = db.posts;
 const Op = db.Sequelize.op;
@@ -21,18 +22,18 @@ const createPost = async (req, res) => {
             return;
         }
         const newpost = await db.sequelize.query(
-            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values ('${images}','${title}','${subtitle}','${body}',${author_id},CURDATE(),CURDATE(),${category_id},'${tag_ids}',CURDATE())`, {
+            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values (${getStringVal(images,true)},'${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},'${getStringVal(tag_ids,true)}',CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
             id: newpost[0],
             title,
-            images: JSON.parse(images),
+            images: images ? JSON.parse(images) : [],
             subtitle,
             body,
             author_id,
             category_id,
-            tag_ids: JSON.parse(tag_ids)
+            tag_ids: tag_ids ? JSON.parse(tag_ids) : []
         });
     }
     catch (e) {
@@ -45,18 +46,26 @@ const createPost = async (req, res) => {
 const updatePostById = async (req, res) => {
     try {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
+        console.log(tag_ids,images,typeof(tag_ids),typeof(images));
+        //Todo error-> array if not provided coming as undefined -> figure out permanent fix
+        if(Array.isArray(images) && images.length==0){
+            images = undefined;
+        }
+        if(Array.isArray(tag_ids) && tag_ids.length==0){
+            tag_ids = undefined;
+        }
         images = JSON.stringify(images);
         tag_ids = JSON.stringify(tag_ids);
         const { id } = req.params;
 
         const sql = `UPDATE posts
         SET title = '${title}',
-        subtitle = '${subtitle}',
+        subtitle = ${getStringVal(subtitle)},
         body = '${body}',
-        author_id = ${author_id},
-        images = '${images}',
-        category_id = ${category_id},
-        tag_ids = '${tag_ids}',
+        author_id = ${getStringVal(author_id)},
+        images = ${getStringVal(images,true)},
+        category_id = ${getStringVal(category_id)},
+        tag_ids = ${getStringVal(tag_ids,true)},
         updatedAt = CURDATE(),
         updated_at = CURDATE()
         WHERE id = ${id};`
@@ -71,8 +80,8 @@ const updatePostById = async (req, res) => {
             body,
             author_id,
             category_id,
-            tag_ids: JSON.parse(tag_ids),
-            images: JSON.parse(images)
+            tag_ids: tag_ids ? JSON.parse(tag_ids) : [],
+            images: images ? JSON.parse(images) : []
         });
     }
     catch (e) {

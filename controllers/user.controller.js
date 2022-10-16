@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+import { getStringVal } from "../utilities/index.js";
 
 const Users = db.user;
 const Op = db.Sequelize.op;
@@ -19,7 +20,7 @@ const createUser = async (req,res) => {
             return;
         }
         const newuser = await db.sequelize.query(
-            `INSERT INTO Users (user_name,name,profile_picture,designation,description,phone_no,createdAt,updatedAt) values ('${user_name}','${name}',${profile_picture || null},${designation || null},${description || null},${phone_no || null},CURDATE(),CURDATE())`, {
+            `INSERT INTO Users (user_name,name,profile_picture,designation,description,phone_no,createdAt,updatedAt) values ('${user_name}','${name}',${getStringVal(profile_picture)},${getStringVal(designation)},${getStringVal(description)},${getStringVal(phone_no)},CURDATE(),CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
@@ -45,13 +46,13 @@ const updateUserById = async (req, res) => {
         const { id } = req.params;
 
         const sql = `UPDATE users
-        SET user_name = ${user_name},
-        name = ${name},
-        profile_picture = ${profile_picture || null},
-        designation = ${designation|| null},
+        SET user_name = '${user_name}',
+        name = '${name}',
+        profile_picture = ${getStringVal(profile_picture)},
+        designation = ${getStringVal(designation)},
         updatedAt = CURDATE(),
-        description= ${description|| null},
-        phone_no=  ${phone_no|| null}
+        description= ${getStringVal(description)},
+        phone_no=  ${getStringVal(phone_no)}
         WHERE id = ${id};`
 
         const result = await db.sequelize.query(sql, {

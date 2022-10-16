@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+import { getStringVal } from "../utilities/index.js";
 
 const Posts = db.category;
 const Op = db.Sequelize.op;
@@ -13,7 +14,7 @@ const createCategory = async (req,res) => {
             return;
         }
         const newcategory = await db.sequelize.query(
-            `INSERT INTO Categories (name,description,createdAt,updatedAt) values ('${name}','${description}',CURDATE(),CURDATE())`, {
+            `INSERT INTO Categories (name,description,createdAt,updatedAt) values ('${name}',${getStringVal(description)},CURDATE(),CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
@@ -36,7 +37,7 @@ const updateCategoryById = async (req, res) => {
 
         const sql = `UPDATE categories
         SET name = '${name}',
-        description = '${description}',
+        description = ${getStringVal(description)},
         updatedAt = CURDATE()
         WHERE id = ${id};`
 
