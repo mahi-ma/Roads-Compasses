@@ -1,11 +1,16 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import postRouter from "./routes/post.routes.js";
 import userRouter from "./routes/user.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import tagRouter from "./routes/tag.routes.js";
 import postTagRouter from "./routes/postTag.routes.js";
 import models from "./models/index.js"
+import authRouter from "./routes/auth.routes.js";
+
+// Set up Global configuration access
+// dotenv.config();
 
 const app = express();
 
@@ -36,7 +41,7 @@ postRouter(app);
 userRouter(app);
 categoryRouter(app);
 tagRouter(app);
-
+authRouter(app);
 
 
 // simple route

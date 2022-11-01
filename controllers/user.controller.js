@@ -1,5 +1,6 @@
 import db from "../models/index.js";
 import { getStringVal } from "../utilities/index.js";
+import jwt from "jsonwebtoken";
 
 const Users = db.user;
 const Op = db.Sequelize.op;
