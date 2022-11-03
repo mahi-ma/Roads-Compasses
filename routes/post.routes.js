@@ -6,7 +6,7 @@ const postRouter = app => {
     var router = express.Router();
 
     //get all posts
-    app.get("/posts", auth, postController.getAllPosts);
+    app.get("/posts", postController.getAllPosts);
     
     //create post
     app.post("/posts", auth, postController.createPost);
@@ -18,7 +18,7 @@ const postRouter = app => {
     app.delete("/posts/:id",auth, postController.deletePostById);
     
     //get post by id
-    app.get("/posts/:id", auth, postController.getPostById);
+    app.get("/posts/:id", postController.getPostById);
 
     app.use("/posts",router);
 }

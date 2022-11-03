@@ -9,6 +9,12 @@ const createPost = async (req, res) => {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
         images = JSON.stringify(images);
         tag_ids = JSON.stringify(tag_ids);
+        if(!req.body.author_id){
+            res.status(400).send({
+                message: "Author id is necessary to create a post"
+            });
+            return;
+        }
         if (!req.body.title) {
             res.status(400).send({
                 message: "Post title cannot be empty"
@@ -22,7 +28,7 @@ const createPost = async (req, res) => {
             return;
         }
         const newpost = await db.sequelize.query(
-            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values (${getStringVal(images,true)},'${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},'${getStringVal(tag_ids,true)}',CURDATE())`, {
+            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values (${getStringVal(images,true)},'${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},${getStringVal(tag_ids,true)},CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
@@ -46,8 +52,6 @@ const createPost = async (req, res) => {
 const updatePostById = async (req, res) => {
     try {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
-        console.log(tag_ids,images,typeof(tag_ids),typeof(images));
-        //Todo error-> array if not provided coming as undefined -> figure out permanent fix
         if(Array.isArray(images) && images.length==0){
             images = undefined;
         }

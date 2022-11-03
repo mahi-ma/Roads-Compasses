@@ -20,8 +20,8 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-const db = models;
-db.sequelize.sync({force: true})
+// const db = models;
+models.sequelize.sync({ force: true })
     .then(() => {
         console.log("Synced db.");
     })
@@ -35,7 +35,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/postTag",postTagRouter);
+app.use("/postTag", postTagRouter);
 
 postRouter(app);
 userRouter(app);

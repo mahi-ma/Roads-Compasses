@@ -1,11 +1,5 @@
 import dbConfig from "../db.config.js";
-
-import { Sequelize } from "sequelize";
-import Posts from "./post.model.js";
-import Users from "./user.model.js";
-import PostTags from "./post_tag.model.js";
-import Tags from "./tag.model.js";
-import Categories from "./category.model.js";
+import { DataTypes, Sequelize } from "sequelize";
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
@@ -20,17 +14,185 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     }
 });
 
-const db = {};
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+const Post = sequelize.define("post", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },
+    images: {
+        type: DataTypes.JSON,
+        default: [],
+        get() {
+            return JSON.parse(JSON.stringify(this.getDataValue('images')));
+        },
+        set(val) {
+           this.setDataValue('images',JSON.stringify(val));
+        }
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    subtitle: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    body: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    author_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    category_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default: null
+    },
+    tag_ids: {
+        type: DataTypes.JSON, 
+        default: [],
+        get() {
+            return JSON.parse(JSON.stringify(this.getDataValue('tag_ids')));
+        },
+        set(val) {
+           this.setDataValue('tag_ids',JSON.stringify(val));
+        }
+    },
+    updated_at: {
+        type: DataTypes.DATEONLY,
+    },
+});
 
-db.post = Posts(sequelize, Sequelize);
-db.user = Users(sequelize, Sequelize);
-db.category = Categories(sequelize, Sequelize);
-db.postTag = PostTags(sequelize, Sequelize);
-db.tag = Tags(sequelize, Sequelize);
+const User =  sequelize.define("user", {
+    user_name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    profile_picture: {
+        type: DataTypes.STRING
+    },
+    designation: {
+        type: DataTypes.STRING,
+    },
+    description: {
+        type: DataTypes.STRING,
+    },
+    phone_no: {
+        type: DataTypes.STRING,
+    },
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
+    },
+});
 
-export default db;
+const PostTag = sequelize.define("postTag", {
+    post_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    tag_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    }
+});
+
+const PostCategory = sequelize.define("postCategory", {
+    post_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    category_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    }
+});
+
+const Tag =  sequelize.define("tag", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+});
+
+const Category =  sequelize.define("category", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING
+    }
+});
+
+Category.hasMany(PostCategory, {
+    foreignKey: "category_id",
+    sourceKey: "id",
+})
+
+Category.hasMany(Post, {
+    foreignKey: "category_id",
+    sourceKey: "id",
+})
+
+Tag.hasMany(PostTag,{
+    foreignKey: "tag_id",
+    sourceKey: "id",
+})
+
+Post.hasMany(PostTag,{
+    foreignKey: "post_id",
+    sourceKey: "id",
+})
+Post.hasMany(PostCategory,{
+    foreignKey: "post_id",
+    sourceKey: "id",
+})
+
+User.hasMany(Post,{
+    foreignKey: "author_id",
+    sourceKey: "id",
+});
+
+sequelize.sync().then(() => {
+    console.log("Tables created successfully")
+
+}).catch((error) => {
+    console.error("Faliure in creating table: ", error);
+})
+
+
+export default {
+    sequelize: sequelize,
+    Sequelize,
+    post: Post,
+    user: User,
+    category: Category,
+    postTag: PostTag,
+    tag: Tag,
+    postCategory: PostCategory
+};
 
 
