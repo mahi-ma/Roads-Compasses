@@ -47,8 +47,10 @@ const createPost = async (req, res) => {
                 return;
             }
         }
+        const author_data = await models.user.findByPk(author_id);
+        const author_name = author_data.name;
         const newpost = await db.sequelize.query(
-            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values ('${getStringVal(images, true)}','${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},'${getStringVal(tag_ids, true)}',CURDATE())`, {
+            `INSERT INTO Posts (images,title,subtitle,body,author_id,author_name,createdAt,updatedAt,category_id,tag_ids,updated_at) values ('${getStringVal(images, true)}','${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},'${author_name}',CURDATE(),CURDATE(),${getStringVal(category_id)},'${getStringVal(tag_ids, true)}',CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
@@ -58,6 +60,7 @@ const createPost = async (req, res) => {
             subtitle,
             body,
             author_id,
+            author_name,
             category_id,
             tag_ids: tag_ids ? JSON.parse(tag_ids) : []
         });
@@ -86,10 +89,9 @@ const updatePostById = async (req, res) => {
         SET title = '${title}',
         subtitle = ${getStringVal(subtitle)},
         body = '${body}',
-        author_id = ${getStringVal(author_id)},
-        images = ${getStringVal(images, true)},
+        images = '${getStringVal(images, true)}',
         category_id = ${getStringVal(category_id)},
-        tag_ids = ${getStringVal(tag_ids, true)},
+        tag_ids = '${getStringVal(tag_ids, true)}',
         updatedAt = CURDATE(),
         updated_at = CURDATE()
         WHERE id = ${id};`

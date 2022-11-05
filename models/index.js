@@ -52,11 +52,15 @@ const Post = sequelize.define("post", {
         allowNull: true
     },
     body: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1000),
         allowNull: false
     },
     author_id: {
         type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    author_name: {
+        type: DataTypes.STRING,
         allowNull: true
     },
     category_id: {
