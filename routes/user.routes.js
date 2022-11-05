@@ -6,7 +6,7 @@ const tagRouter = app => {
     var router = express.Router();
 
     //get all users
-    app.get("/users", auth,userController.getAllUsers);
+    app.get("/users",userController.getAllUsers);
 
     //create a user
     app.post("/users", auth,userController.createUser);
@@ -18,7 +18,7 @@ const tagRouter = app => {
     app.delete("/users/:id", auth,userController.deleteUserById);
 
     //get user by id
-    app.get("/users/:id",auth, userController.getUserById);
+    app.get("/users/:id", userController.getUserById);
 
     app.use("/users", router);
 }

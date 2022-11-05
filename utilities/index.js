@@ -1,6 +1,6 @@
 export const getStringVal = (val,isArray) => {
     if(val===undefined){
-        return isArray ? "'[]'" : null;
+        return isArray ? '[]' : null;
     }
     else{
         if(val==null){

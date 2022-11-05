@@ -5,6 +5,6 @@ import auth from "../middlewares/auth.js";
 var router = express.Router();
 
 //get all posts
-router.get("/", auth,postTagController.getAllPosts);
+router.get("/",postTagController.getAllPosts);
 
 export default router;

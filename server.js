@@ -21,7 +21,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // const db = models;
-models.sequelize.sync({ force: true })
+models.sequelize.sync({ alter: true })
     .then(() => {
         console.log("Synced db.");
     })

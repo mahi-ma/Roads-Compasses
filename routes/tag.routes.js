@@ -7,7 +7,7 @@ const tagRouter = app => {
     var router = express.Router();
 
     //get all tags
-    app.get("/tags", auth,tagController.getAllTags);
+    app.get("/tags",tagController.getAllTags);
 
     //create tag
     app.post("/tags", auth,tagController.createTag);
@@ -19,7 +19,7 @@ const tagRouter = app => {
     app.delete("/tags/:id", auth,tagController.deleteTagById);
 
     //get tag by id
-    app.get("/tags/:id", auth,tagController.getTagById);
+    app.get("/tags/:id",tagController.getTagById);
 
     app.use("/tags", router);
 }

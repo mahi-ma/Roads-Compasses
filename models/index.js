@@ -14,6 +14,17 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     }
 });
 
+const Tag =  sequelize.define("tag", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+});
 
 const Post = sequelize.define("post", {
     id: {
@@ -116,18 +127,6 @@ const PostCategory = sequelize.define("postCategory", {
     category_id: {
         type: DataTypes.INTEGER,
         primaryKey: true
-    }
-});
-
-const Tag =  sequelize.define("tag", {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
     }
 });
 

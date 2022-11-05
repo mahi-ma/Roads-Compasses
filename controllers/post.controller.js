@@ -1,5 +1,6 @@
 import db from "../models/index.js";
 import { getStringVal } from "../utilities/index.js";
+import models from "../models/index.js";
 
 const Posts = db.posts;
 const Op = db.Sequelize.op;
@@ -9,7 +10,7 @@ const createPost = async (req, res) => {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
         images = JSON.stringify(images);
         tag_ids = JSON.stringify(tag_ids);
-        if(!req.body.author_id){
+        if (!req.body.author_id) {
             res.status(400).send({
                 message: "Author id is necessary to create a post"
             });
@@ -27,8 +28,27 @@ const createPost = async (req, res) => {
             });
             return;
         }
+        //tag ids foreign key check
+        if(tag_ids!=undefined){
+            let areAllTagsPresent = true;
+            const tagIds = JSON.parse(tag_ids);
+            for(let i=0;i<tagIds.length;i++){
+                const currId = await models.tag.findByPk(tagIds[i]);
+                if (currId === null) {
+                    //not found
+                    areAllTagsPresent= false;
+                    break;
+                }
+            }
+            if(!areAllTagsPresent){
+                res.status(400).send({
+                    message: "one of the tag id is irrelevant"
+                });
+                return;
+            }
+        }
         const newpost = await db.sequelize.query(
-            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values (${getStringVal(images,true)},'${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},${getStringVal(tag_ids,true)},CURDATE())`, {
+            `INSERT INTO Posts (images,title,subtitle,body,author_id,createdAt,updatedAt,category_id,tag_ids,updated_at) values ('${getStringVal(images, true)}','${title}',${getStringVal(subtitle)},'${body}',${getStringVal(author_id)},CURDATE(),CURDATE(),${getStringVal(category_id)},'${getStringVal(tag_ids, true)}',CURDATE())`, {
             type: db.sequelize.QueryTypes.INSERT
         });
         res.send({
@@ -52,10 +72,10 @@ const createPost = async (req, res) => {
 const updatePostById = async (req, res) => {
     try {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
-        if(Array.isArray(images) && images.length==0){
+        if (Array.isArray(images) && images.length == 0) {
             images = undefined;
         }
-        if(Array.isArray(tag_ids) && tag_ids.length==0){
+        if (Array.isArray(tag_ids) && tag_ids.length == 0) {
             tag_ids = undefined;
         }
         images = JSON.stringify(images);
@@ -67,9 +87,9 @@ const updatePostById = async (req, res) => {
         subtitle = ${getStringVal(subtitle)},
         body = '${body}',
         author_id = ${getStringVal(author_id)},
-        images = ${getStringVal(images,true)},
+        images = ${getStringVal(images, true)},
         category_id = ${getStringVal(category_id)},
-        tag_ids = ${getStringVal(tag_ids,true)},
+        tag_ids = ${getStringVal(tag_ids, true)},
         updatedAt = CURDATE(),
         updated_at = CURDATE()
         WHERE id = ${id};`
@@ -117,10 +137,36 @@ const deletePostById = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await db.sequelize.query(`SELECT * from Posts`, {
-            type: db.sequelize.QueryTypes.SELECT
-        });
-        res.send(posts);
+        let posts;
+        if(req.query.category_id){
+            //filter by category id
+            posts = await db.sequelize.query(`SELECT * from Posts where category_id=${req.query.category_id}`, {
+                type: db.sequelize.QueryTypes.SELECT
+            });
+        }
+        else{
+            posts = await db.sequelize.query(`SELECT * from Posts`, {
+                type: db.sequelize.QueryTypes.SELECT
+            });
+        }
+        const updatedPosts = [];
+        const postAllData = posts.map(async (post)=>{
+            if(post.tag_ids.length>0){
+                const newTagData = [];
+                const allData =  post.tag_ids.map(async (tag)=>{
+                    const currId = await models.tag.findByPk(tag);
+                    newTagData.push({
+                        id: currId.id,
+                        name: currId.name
+                    })
+                })
+                await Promise.all(allData);
+                post.tag_ids = newTagData;
+            }
+            updatedPosts.push(post);
+        })
+        await Promise.all(postAllData);
+        res.send(updatedPosts);
     }
     catch (e) {
         res.status(500).send({
@@ -135,6 +181,19 @@ const getPostById = async (req, res) => {
         const selectedPost = await db.sequelize.query(`SELECT * from Posts where id=${id}`, {
             type: db.sequelize.QueryTypes.SELECT
         });
+        //to send complete tag data along with name
+        const newTagData = [];
+        if(selectedPost[0].tag_ids.length>0){
+            const allData =  selectedPost[0].tag_ids.map(async (tag)=>{
+                const currId = await models.tag.findByPk(tag);
+                newTagData.push({
+                    id: currId.id,
+                    name: currId.name
+                })
+            })
+            await Promise.all(allData);
+            selectedPost[0].tag_ids = newTagData;
+        }
         res.send({
             ...selectedPost[0]
         });

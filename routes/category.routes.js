@@ -8,7 +8,7 @@ const categoryRouter = app => {
     var router = express.Router();
 
     //get all categories
-    app.get("/categories", auth, categoryController.getAllCategories);
+    app.get("/categories", categoryController.getAllCategories);
 
     //create category
     app.post("/categories", auth, categoryController.createCategory);
@@ -20,7 +20,7 @@ const categoryRouter = app => {
     app.delete("/categories/:id", auth, categoryController.deleteCategoryById);
 
     //get category by id
-    app.get("/categories/:id", auth, categoryController.getCategoryById);
+    app.get("/categories/:id", categoryController.getCategoryById);
 
     app.use("/categories", router);
 }
