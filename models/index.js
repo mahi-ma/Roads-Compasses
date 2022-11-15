@@ -112,6 +112,47 @@ const User =  sequelize.define("user", {
     },
 });
 
+const Review =  sequelize.define("review", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default: null
+    },
+    body: {
+        type: DataTypes.STRING,
+    },
+    post_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        default: null
+    }
+});
+
+const Like =  sequelize.define("like", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default: null
+    },
+    post_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        default: null
+    }
+});
+
 const PostTag = sequelize.define("postTag", {
     post_id: {
         type: DataTypes.INTEGER,
@@ -195,7 +236,16 @@ export default {
     category: Category,
     postTag: PostTag,
     tag: Tag,
-    postCategory: PostCategory
+    postCategory: PostCategory,
+    review: Review,
+    like: Like
 };
 
 
+// post
+// category
+// tag
+// user
+// role
+// reviews/comments
+// likes

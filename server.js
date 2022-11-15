@@ -8,6 +8,8 @@ import tagRouter from "./routes/tag.routes.js";
 import postTagRouter from "./routes/postTag.routes.js";
 import models from "./models/index.js"
 import authRouter from "./routes/auth.routes.js";
+import reviewRouter from "./routes/review.routes.js";
+import likeRouter from "./routes/like.routes.js";
 
 // Set up Global configuration access
 // dotenv.config();
@@ -42,6 +44,8 @@ userRouter(app);
 categoryRouter(app);
 tagRouter(app);
 authRouter(app);
+reviewRouter(app)
+likeRouter(app);
 
 
 // simple route

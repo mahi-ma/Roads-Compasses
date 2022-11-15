@@ -10,6 +10,7 @@ const createPost = async (req, res) => {
         let { title, subtitle, body, author_id, images, category_id, tag_ids } = req.body;
         images = JSON.stringify(images);
         tag_ids = JSON.stringify(tag_ids);
+        console.log(req.body,req.data,req.params);
         if (!req.body.author_id) {
             res.status(400).send({
                 message: "Author id is necessary to create a post"
